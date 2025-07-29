@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Fine-Tuning Platform - Enterprise Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>LLM Fine-Tuning Platform</h1>
+                    <span class="version">Enterprise v2.0</span>
+                </div>
+                <nav class="nav">
+                    <button class="nav-item active" data-section="overview">Overview</button>
+                    <button class="nav-item" data-section="projects">Projects</button>
+                    <button class="nav-item" data-section="models">Models</button>
+                    <button class="nav-item" data-section="experiments">Experiments</button>
+                    <button class="nav-item" data-section="monitoring">Monitoring</button>
+                    <button class="nav-item" data-section="settings">Settings</button>
+                </nav>
+                <div class="user-menu">
+                    <span class="user-name">Dr. Sarah Chen</span>
+                    <div class="status--success">Online</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Overview Section -->
+            <section id="overview" class="section active">
+                <div class="section-header">
+                    <h2>Platform Overview</h2>
+                    <div class="quick-actions">
+                        <button class="btn btn--primary" id="createProjectBtn">
+                            <span>+ New Project</span>
+                        </button>
+                        <button class="btn btn--secondary" id="exportDataBtn">
+                            <span>Export Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Projects</div>
+                        <div class="metric-value" id="totalProjects">15</div>
+                        <div class="metric-trend positive">+3 this month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Active Training</div>
+                        <div class="metric-value" id="activeTraining">3</div>
+                        <div class="metric-trend neutral">2 in queue</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Models Deployed</div>
+                        <div class="metric-value" id="modelsDeployed">8</div>
+                        <div class="metric-trend positive">+2 this week</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Cost Savings</div>
+                        <div class="metric-value" id="costSavings">68%</div>
+                        <div class="metric-trend positive">vs traditional training</div>
+                    </div>
+                </div>
+
+                <!-- Active Projects -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-panel">
+                        <div class="panel-header">
+                            <h3>Active Projects</h3>
+                            <button class="btn btn--sm btn--outline">View All</button>
+                        </div>
+                        <div class="projects-list" id="activeProjectsList">
+                            <!-- Projects will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Resource Utilization -->
+                    <div class="dashboard-panel">
+                        <div class="panel-header">
+                            <h3>Resource Utilization</h3>
+                            <div class="status--info">Real-time</div>
+                        </div>
+                        <div class="resource-metrics">
+                            <div class="resource-item">
+                                <div class="resource-label">GPU Utilization</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 87%"></div>
+                                </div>
+                                <span class="resource-value">87%</span>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-label">Memory Usage</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 72%"></div>
+                                </div>
+                                <span class="resource-value">72%</span>
+                            </div>
+                            <div class="resource-item">
+                                <div class="resource-label">Storage Usage</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%"></div>
+                                </div>
+                                <span class="resource-value">45%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Charts -->
+                <div class="charts-grid">
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Training Progress Overview</h3>
+                            <select class="form-control chart-filter">
+                                <option>Last 7 days</option>
+                                <option>Last 30 days</option>
+                                <option>Last 90 days</option>
+                            </select>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="trainingChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Cost Analysis</h3>
+                            <div class="cost-summary">Budget: $50,000 / $28,750 used</div>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="costChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="section">
+                <div class="section-header">
+                    <h2>Project Management</h2>
+                    <div class="section-actions">
+                        <button class="btn btn--primary" id="newProjectBtn">+ Create Project</button>
+                        <button class="btn btn--outline">Import Project</button>
+                    </div>
+                </div>
+
+                <!-- Project Creation Form -->
+                <div class="card project-form hidden" id="projectForm">
+                    <div class="card__header">
+                        <h3>Create New Fine-Tuning Project</h3>
+                    </div>
+                    <div class="card__body">
+                        <form id="createProjectForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Project Name</label>
+                                    <input type="text" class="form-control" placeholder="Enter project name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Domain</label>
+                                    <select class="form-control" required>
+                                        <option value="">Select domain</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="legal">Legal</option>
+                                        <option value="finance">Finance</option>
+                                        <option value="education">Education</option>
+                                        <option value="customer-service">Customer Service</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Base Model</label>
+                                    <select class="form-control" id="modelSelect" required>
+                                        <option value="">Select base model</option>
+                                        <option value="llama2-7b">LLaMA-2-7B</option>
+                                        <option value="mistral-7b">Mistral-7B</option>
+                                        <option value="falcon-7b">Falcon-7B</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">PEFT Technique</label>
+                                    <select class="form-control" id="peftSelect" required>
+                                        <option value="">Select technique</option>
+                                        <option value="lora">LoRA</option>
+                                        <option value="qlora">QLoRA</option>
+                                        <option value="adalora">AdaLoRA</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Dataset Upload</label>
+                                <div class="file-upload-area">
+                                    <input type="file" id="datasetFile" accept=".json,.jsonl,.csv" class="file-input">
+                                    <div class="file-upload-text">
+                                        <span>Drop files here or click to browse</span>
+                                        <small>Supported formats: JSON, JSONL, CSV</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn--outline" id="cancelProjectBtn">Cancel</button>
+                                <button type="submit" class="btn btn--primary">Create Project</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Projects Table -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Domain</th>
+                                        <th>Model</th>
+                                        <th>Technique</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        <th>Accuracy</th>
+                                        <th>Cost</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projectsTableBody">
+                                    <!-- Projects will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Models Section -->
+            <section id="models" class="section">
+                <div class="section-header">
+                    <h2>Model Registry & Configuration</h2>
+                    <div class="section-actions">
+                        <button class="btn btn--primary">Deploy Model</button>
+                        <button class="btn btn--outline">Import Model</button>
+                    </div>
+                </div>
+
+                <div class="models-grid">
+                    <div class="model-card">
+                        <div class="model-header">
+                            <h3>LLaMA-2-7B</h3>
+                            <div class="status--success">Available</div>
+                        </div>
+                        <div class="model-details">
+                            <div class="model-spec">
+                                <span class="spec-label">Parameters:</span>
+                                <span class="spec-value">7B</span>
+                            </div>
+                            <div class="model-spec">
+                                <span class="spec-label">Memory:</span>
+                                <span class="spec-value">14GB</span>
+                            </div>
+                            <div class="model-spec">
+                                <span class="spec-label">PEFT Support:</span>
+                                <span class="spec-value">LoRA, QLoRA, AdaLoRA</span>
+                            </div>
+                        </div>
+                        <div class="model-actions">
+                            <button class="btn btn--sm btn--primary">Configure</button>
+                            <button class="btn btn--sm btn--outline">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-header">
+                            <h3>Mistral-7B</h3>
+                            <div class="status--success">Available</div>
+                        </div>
+                        <div class="model-details">
+                            <div class="model-spec">
+                                <span class="spec-label">Parameters:</span>
+                                <span class="spec-value">7B</span>
+                            </div>
+                            <div class="model-spec">
+                                <span class="spec-label">Memory:</span>
+                                <span class="spec-value">14GB</span>
+                            </div>
+                            <div class="model-spec">
+                                <span class="spec-label">PEFT Support:</span>
+                                <span class="spec-value">LoRA, QLoRA</span>
+                            </div>
+                        </div>
+                        <div class="model-actions">
+                            <button class="btn btn--sm btn--primary">Configure</button>
+                            <button class="btn btn--sm btn--outline">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="model-card">
+                        <div class="model-header">
+                            <h3>Falcon-7B</h3>
+                            <div class="status--success">Available</div>
+                        </div>
+                        <div class="model-details">
+                            <div class="model-spec">
+                                <span class="spec-label">Parameters:</span>
+                                <span class="spec-value">7B</span>
+                            </div>
+                            <div class="model-spec">
+                                <span class="spec-label">Memory:</span>
+                                <span class="spec-value">14GB</span>
+                            </div>
+                            <div class="model-spec">
+                                <span class="spec-label">PEFT Support:</span>
+                                <span class="spec-value">LoRA, AdaLoRA</span>
+                            </div>
+                        </div>
+                        <div class="model-actions">
+                            <button class="btn btn--sm btn--primary">Configure</button>
+                            <button class="btn btn--sm btn--outline">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experiments Section -->
+            <section id="experiments" class="section">
+                <div class="section-header">
+                    <h2>Experiment Tracking & MLOps</h2>
+                    <div class="section-actions">
+                        <button class="btn btn--primary">Start Experiment</button>
+                        <button class="btn btn--outline">Compare Runs</button>
+                    </div>
+                </div>
+
+                <div class="experiments-dashboard">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Recent Experiments</h3>
+                            <div class="mlflow-badge">MLflow Integration</div>
+                        </div>
+                        <div class="card__body">
+                            <div class="experiments-list" id="experimentsList">
+                                <!-- Experiments will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Hyperparameter Optimization</h3>
+                            <div class="optuna-badge">Optuna</div>
+                        </div>
+                        <div class="card__body">
+                            <div class="optimization-status">
+                                <div class="optimization-metric">
+                                    <span class="metric-label">Best Trial:</span>
+                                    <span class="metric-value">#47 (Accuracy: 94.2%)</span>
+                                </div>
+                                <div class="optimization-metric">
+                                    <span class="metric-label">Trials Completed:</span>
+                                    <span class="metric-value">52/100</span>
+                                </div>
+                                <div class="optimization-metric">
+                                    <span class="metric-label">Time Remaining:</span>
+                                    <span class="metric-value">~2h 15m</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 52%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Monitoring Section -->
+            <section id="monitoring" class="section">
+                <div class="section-header">
+                    <h2>Production Monitoring & Analytics</h2>
+                    <div class="section-actions">
+                        <button class="btn btn--primary">Create Alert</button>
+                        <button class="btn btn--outline">View Logs</button>
+                    </div>
+                </div>
+
+                <div class="monitoring-grid">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Security & Compliance</h3>
+                            <div class="status--success">Compliant</div>
+                        </div>
+                        <div class="card__body">
+                            <div class="compliance-items">
+                                <div class="compliance-item">
+                                    <span class="compliance-label">GDPR Compliance</span>
+                                    <div class="status--success">✓ Enabled</div>
+                                </div>
+                                <div class="compliance-item">
+                                    <span class="compliance-label">PII Detection</span>
+                                    <div class="status--success">✓ Active</div>
+                                </div>
+                                <div class="compliance-item">
+                                    <span class="compliance-label">Data Encryption</span>
+                                    <div class="status--success">✓ AES-256</div>
+                                </div>
+                                <div class="compliance-item">
+                                    <span class="compliance-label">Last Security Scan</span>
+                                    <div class="status--info">Jan 27, 2025</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Cost Analysis</h3>
+                            <div class="cost-trend positive">-32% vs last month</div>
+                        </div>
+                        <div class="card__body">
+                            <div class="cost-breakdown">
+                                <div class="cost-item">
+                                    <span class="cost-label">Monthly Budget</span>
+                                    <span class="cost-value">$50,000</span>
+                                </div>
+                                <div class="cost-item">
+                                    <span class="cost-label">Current Spend</span>
+                                    <span class="cost-value">$28,750</span>
+                                </div>
+                                <div class="cost-item">
+                                    <span class="cost-label">Projected Spend</span>
+                                    <span class="cost-value">$42,100</span>
+                                </div>
+                                <div class="cost-item highlight">
+                                    <span class="cost-label">PEFT Savings</span>
+                                    <span class="cost-value">$21,900</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <div class="section-header">
+                    <h2>Platform Settings & Administration</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>User Management</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="form-group">
+                                <label class="form-label">Access Control</label>
+                                <select class="form-control">
+                                    <option>Role-Based Access Control (RBAC)</option>
+                                    <option>Attribute-Based Access Control (ABAC)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Default User Role</label>
+                                <select class="form-control">
+                                    <option>Data Scientist</option>
+                                    <option>ML Engineer</option>
+                                    <option>Administrator</option>
+                                    <option>Viewer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__header">
+                            <h3>Infrastructure Settings</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="form-group">
+                                <label class="form-label">Auto-scaling</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="autoscaling" checked>
+                                    <label for="autoscaling"></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Spot Instance Usage</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="spotinstances" checked>
+                                    <label for="spotinstances"></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Max GPU Nodes</label>
+                                <input type="number" class="form-control" value="8" min="1" max="32">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal for Project Details -->
+    <div class="modal hidden" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Project Details</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
